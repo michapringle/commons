@@ -47,26 +47,30 @@ final class LinkedListTest {
     @Test
     void appendShouldAddListWithoutCopying() {
 
-        final LinkedList<String> subjectUnderTest = new LinkedList<>();
-        subjectUnderTest.add(typeAsEquals("a"));
-        subjectUnderTest.add(typeAsEquals("b"));
+        final LinkedList<A> subjectUnderTest = new LinkedList<>();
+        final A one = new A();
+        final A two = new A();
+        final A three = new A();
+        final A four = new A();
+        subjectUnderTest.add(typeAsEquals(one));
+        subjectUnderTest.add(typeAsEquals(two));
 
-        final LinkedList<String> toAppend = new LinkedList<>();
-        toAppend.add(typeAsEquals("c"));
-        toAppend.add(typeAsEquals("d"));
+        final LinkedList<A> toAppend = new LinkedList<>();
+        toAppend.add(typeAsEquals(three));
+        toAppend.add(typeAsEquals(four));
 
         subjectUnderTest.append(toAppend);
 
-        final Iterator<String> actual = subjectUnderTest.iterator();
-        assertEquals("a", actual.next());
-        assertEquals("b", actual.next());
-        assertEquals("c", actual.next());
-        assertEquals("d", actual.next());
+        final Iterator<A> actual = subjectUnderTest.iterator();
+        assertEquals(one, actual.next());
+        assertEquals(two, actual.next());
+        assertEquals(three, actual.next());
+        assertEquals(four, actual.next());
         assertFalse(actual.hasNext());
 
-        final Iterator<String> iterator = toAppend.iterator();
-        assertEquals("c", iterator.next());
-        assertEquals("d", iterator.next());
+        final Iterator<A> iterator = toAppend.iterator();
+        assertEquals(three, iterator.next());
+        assertEquals(four, iterator.next());
         assertFalse(iterator.hasNext());
     }
 
@@ -110,5 +114,9 @@ final class LinkedListTest {
                 .getClass().getName() + "@" + Integer.toHexString(subjectUnderTest.hashCode());
 
         assertNotEquals(unexpected, subjectUnderTest.toString());
+    }
+
+    private static class A {
+        // use this for instance equality testing
     }
 }

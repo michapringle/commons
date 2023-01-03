@@ -24,10 +24,10 @@ public final class LinkedList<E> {
     public void add(final Equals<E> element) {
 
         if (head == null) {
-            head = new Node<>(element, null, null);
+            head = new Node<>(element, null);
             first = head;
         } else {
-            final Node<E> n = new Node<>(element, null, head);
+            final Node<E> n = new Node<>(element, head);
             head.next = n;
             head = n;
         }
@@ -43,6 +43,9 @@ public final class LinkedList<E> {
 
         if (head != null) {
             head = head.previous;
+        }
+        if (head != null) {
+            head.next = null;
         }
     }
 
@@ -99,9 +102,9 @@ public final class LinkedList<E> {
         private Node<T> next;
         private final Node<T> previous;
 
-        public Node(Equals<T> element, Node<T> next, Node<T> previous) {
+        public Node(Equals<T> element, Node<T> previous) {
             this.element = element;
-            this.next = next;
+            this.next = null;
             this.previous = previous;
         }
     }
