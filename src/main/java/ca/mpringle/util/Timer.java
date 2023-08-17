@@ -11,7 +11,7 @@ public final class Timer {
 
     private Timer(final long startTimeInMillis) {
 
-        this.startTimeInMillis = Checks.check(startTimeInMillis).isGreaterThan(0L, "start time must be > 0");
+        this.startTimeInMillis = Checks.notNullAnd(startTimeInMillis).isGreaterThan(0L, "start time must be > 0");
         this.elapsedTimesInMillis = new ArrayList<>();
     }
 

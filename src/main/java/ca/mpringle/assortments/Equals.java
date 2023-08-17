@@ -9,7 +9,7 @@ package ca.mpringle.assortments;
  * A user of this class can use to the new type safe equals method {@link Equals<T>#verifyEquality(T)}
  * The verbose name is to ensure there is no confusion between the old and new methods.
  *
- * @param <T> Your class that you want compile time equals checking on.
+ * @param <T> Your class that you want compile-time equals checking on.
  */
 public interface Equals<T> {
 

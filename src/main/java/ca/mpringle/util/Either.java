@@ -17,7 +17,7 @@ public final class Either<L, R> {
         final boolean isLeftSet = this.right == null && this.isLeft;
         final boolean isRightSet = this.left == null && !this.isLeft;
         final String message = "Either elements are mutually exclusive, if left is set, right must be null. If right is set, left must be null.";
-        Checks.check(null).isTrue(isLeftSet || isRightSet, message);
+        Checks.notNullAnd(isLeft).isValid(p -> isLeftSet || isRightSet, message);
     }
 
     public static <L, R> Either<L, R> newLeft(final L left) {
