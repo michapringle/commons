@@ -63,7 +63,7 @@ public final class Checks {
 
     public static class NumberChecks<T extends Number> {
 
-        final Checks.StandardChecks<T> standardChecks;
+        private final Checks.StandardChecks<T> standardChecks;
 
         private NumberChecks(final Checks.StandardChecks<T> reference) {
 
@@ -75,14 +75,9 @@ public final class Checks {
             return standardChecks.get();
         }
 
-        public <R extends Number> R map(final Function<Number, R> mapperFunction) {
+        public <R> R map(final Function<Number, R> mapperFunction) {
 
             return get() == null ? null : mapperFunction.apply(get());
-        }
-
-        public <R extends Number> NumberChecks<R> mapAnd(final Function<Number, R> mapperFunction) {
-
-            return get() == null ? Checks.nullableAnd((R) null) : Checks.nullableAnd((R) mapperFunction.apply(get()));
         }
 
         public T isValid(final Predicate<T> predicate) {
@@ -347,7 +342,7 @@ public final class Checks {
 
     public static class CollectionChecks<T> {
 
-        final Checks.StandardChecks<Collection<T>> standardChecks;
+        private final Checks.StandardChecks<Collection<T>> standardChecks;
 
         private CollectionChecks(final Checks.StandardChecks<Collection<T>> reference) {
 
@@ -362,11 +357,6 @@ public final class Checks {
         public <R> R map(final Function<Collection<T>, R> mapperFunction) {
 
             return get() == null ? null : mapperFunction.apply(get());
-        }
-
-        public <R> CollectionChecks<R> mapAnd(final Function<Collection<T>, Collection<R>> mapperFunction) {
-
-            return get() == null ? Checks.nullableAnd((Collection<R>) null) : Checks.nullableAnd(mapperFunction.apply(get()));
         }
 
         public Collection<T> isValid(final Predicate<Collection<T>> predicate) {
@@ -423,7 +413,7 @@ public final class Checks {
 
     public static class OptionalChecks<T> {
 
-        final Checks.StandardChecks<Optional<T>> standardChecks;
+        private final Checks.StandardChecks<Optional<T>> standardChecks;
 
         private OptionalChecks(final Checks.StandardChecks<Optional<T>> reference) {
 
@@ -438,11 +428,6 @@ public final class Checks {
         public <R> R map(final Function<Optional<T>, R> mapperFunction) {
 
             return mapperFunction.apply(get());
-        }
-
-        public <R> OptionalChecks<R> mapAnd(final Function<Optional<T>, Optional<R>> mapperFunction) {
-
-            return Checks.notNullAnd(mapperFunction.apply(get()));
         }
 
         public Optional<T> isValid(final Predicate<Optional<T>> predicate) {
@@ -542,11 +527,6 @@ public final class Checks {
         public <R> R map(final Function<T, R> mapperFunction) {
 
             return reference == null ? null : mapperFunction.apply(reference);
-        }
-
-        public <R> Checks.StandardChecks<R> mapAnd(final Function<T, R> mapperFunction) {
-
-            return reference == null ? Checks.nullableAnd((R) null) : Checks.nullableAnd(mapperFunction.apply(reference));
         }
 
         public T isValid(final Predicate<T> predicate) {

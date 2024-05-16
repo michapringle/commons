@@ -1,6 +1,5 @@
 package ca.mpringle.util;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -36,11 +35,11 @@ final class ChecksTest {
     public static final List<Object> COLLECTION_EMPTY = List.of();
     private static final Collection<String> COLLECTION_NULL = null;
 
-    private static final String COMPARABLE_A = "a";
-    private static final String COMPARABLE_B = "b";
-    private static final String COMPARABLE_C = "c";
-    private static final String COMPARABLE_D = "d";
-    private static final String COMPARABLE_NULL = null;
+    private static final Integer NUMBER_1 = 1;
+    private static final Integer NUMBER_2 = 2;
+    private static final Integer NUMBER_3 = 3;
+    private static final Integer NUMBER_4 = 4;
+    private static final Integer NUMBER_NULL = null;
 
     @Test
     void standardStaticFactoryMethodsShouldValidateInvariant() {
@@ -78,12 +77,12 @@ final class ChecksTest {
     @Test
     void comparableStaticFactoryMethodsShouldValidateInvariant() {
 
-        assertThatThrownBy(() -> Checks.notNullAnd(COMPARABLE_NULL))
+        assertThatThrownBy(() -> Checks.notNullAnd(NUMBER_NULL))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("reference must not be null.");
-        assertDoesNotThrow(() -> Checks.notNullAnd(COMPARABLE_A));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_A));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_NULL));
+        assertDoesNotThrow(() -> Checks.notNullAnd(NUMBER_1));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_1));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_NULL));
     }
 
     @Test
@@ -100,28 +99,9 @@ final class ChecksTest {
         assertEquals("[a]", Checks.notNullAnd(COLLECTION_A).map(Collection::toString));
         assertNull(Checks.nullableAnd(COLLECTION_NULL).map(Collection::toString));
 
-        // comparable
-        assertEquals("a", Checks.notNullAnd(COMPARABLE_A).map(Comparable::toString));
-        assertNull(Checks.nullableAnd(COMPARABLE_NULL).map(Comparable::toString));
-    }
-
-    @Test
-    void mapAndShouldMapToEnclosingClassWhenCalled() {
-
-        // standard
-        assertEquals(STANDARD_A, Checks.notNullAnd(STANDARD_A).mapAnd(s -> s).get());
-        assertNull(Checks.nullableAnd(STANDARD_NULL).mapAnd(s -> s).get());
-
-        // optional
-        assertEquals(OPTIONAL_A, Checks.notNullAnd(OPTIONAL_A).mapAnd(o -> o.stream().findAny()).get());
-
-        // collections
-        assertEquals(COLLECTION_A, Checks.notNullAnd(COLLECTION_A).mapAnd(c -> Arrays.asList(c.toArray())).get());
-        assertNull(Checks.nullableAnd(COLLECTION_NULL).mapAnd(c -> Arrays.asList(c.toArray())).get());
-
-        // comparable
-        assertEquals(COMPARABLE_A, Checks.notNullAnd(COMPARABLE_A).mapAnd(Comparable::toString).get());
-        assertNull(Checks.nullableAnd(COMPARABLE_NULL).mapAnd(Comparable::toString).get());
+        // number
+        assertEquals("1", Checks.notNullAnd(NUMBER_1).map(Object::toString));
+        assertNull(Checks.nullableAnd(NUMBER_NULL).map(Object::toString));
     }
 
     @Test
@@ -186,21 +166,21 @@ final class ChecksTest {
     }
 
     @Test
-    void comparableIsValidShouldThrowExceptionWhenPredicateFails() {
+    void numberIsValidShouldThrowExceptionWhenPredicateFails() {
 
-        assertThatThrownBy(() -> Checks.notNullAnd(COMPARABLE_A).isValid(v -> v.equals(COMPARABLE_B)))
+        assertThatThrownBy(() -> Checks.notNullAnd(NUMBER_1).isValid(v -> v.equals(NUMBER_2)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Predicate check failed for 'a'");
+                .hasMessage("Predicate check failed for '1'");
 
-        assertThatThrownBy(() -> Checks.notNullAnd(COMPARABLE_A).isValidAnd(v -> v.equals(COMPARABLE_B)))
+        assertThatThrownBy(() -> Checks.notNullAnd(NUMBER_1).isValidAnd(v -> v.equals(NUMBER_2)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Predicate check failed for 'a'");
+                .hasMessage("Predicate check failed for '1'");
 
-        assertThatThrownBy(() -> Checks.notNullAnd(COMPARABLE_A).isValid(v -> v.equals(COMPARABLE_B), "some message %s", "bob"))
+        assertThatThrownBy(() -> Checks.notNullAnd(NUMBER_1).isValid(v -> v.equals(NUMBER_2), "some message %s", "bob"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("some message bob");
 
-        assertThatThrownBy(() -> Checks.notNullAnd(COMPARABLE_A).isValidAnd(v -> v.equals(COMPARABLE_B), "some message %s", "bob"))
+        assertThatThrownBy(() -> Checks.notNullAnd(NUMBER_1).isValidAnd(v -> v.equals(NUMBER_2), "some message %s", "bob"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("some message bob");
     }
@@ -246,17 +226,17 @@ final class ChecksTest {
     }
 
     @Test
-    void comparableIsValidShouldNotThrowExceptionWhenPredicateIsValid() {
+    void numberIsValidShouldNotThrowExceptionWhenPredicateIsValid() {
 
-        assertDoesNotThrow(() -> Checks.notNullAnd(COMPARABLE_A).isValid(v -> v.equals(COMPARABLE_A)));
-        assertDoesNotThrow(() -> Checks.notNullAnd(COMPARABLE_A).isValid(v -> v.equals(COMPARABLE_A), "some message %s", "bob"));
-        assertDoesNotThrow(() -> Checks.notNullAnd(COMPARABLE_A).isValidAnd(v -> v.equals(COMPARABLE_A)));
-        assertDoesNotThrow(() -> Checks.notNullAnd(COMPARABLE_A).isValidAnd(v -> v.equals(COMPARABLE_A), "some message %s", "bob"));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_A).isValid(v -> v.equals(COMPARABLE_A)));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_NULL).isValid(v -> v.equals(COMPARABLE_A)));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_NULL).isValid(v -> v.equals(COMPARABLE_A), "some message %s", "bob"));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_NULL).isValidAnd(v -> v.equals(COMPARABLE_A)));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_NULL).isValidAnd(v -> v.equals(COMPARABLE_A), "some message %s", "bob"));
+        assertDoesNotThrow(() -> Checks.notNullAnd(NUMBER_1).isValid(v -> v.equals(NUMBER_1)));
+        assertDoesNotThrow(() -> Checks.notNullAnd(NUMBER_1).isValid(v -> v.equals(NUMBER_1), "some message %s", "bob"));
+        assertDoesNotThrow(() -> Checks.notNullAnd(NUMBER_1).isValidAnd(v -> v.equals(NUMBER_1)));
+        assertDoesNotThrow(() -> Checks.notNullAnd(NUMBER_1).isValidAnd(v -> v.equals(NUMBER_1), "some message %s", "bob"));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_1).isValid(v -> v.equals(NUMBER_1)));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_NULL).isValid(v -> v.equals(NUMBER_1)));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_NULL).isValid(v -> v.equals(NUMBER_1), "some message %s", "bob"));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_NULL).isValidAnd(v -> v.equals(NUMBER_1)));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_NULL).isValidAnd(v -> v.equals(NUMBER_1), "some message %s", "bob"));
     }
 
     @Test
@@ -302,22 +282,22 @@ final class ChecksTest {
     }
 
     @Test
-    void comparableIsAnyOfShouldThrowExceptionWhenThereIsNoMatch() {
+    void collectionIsAnyOfShouldThrowExceptionWhenThereIsNoMatch() {
 
-        final List<String> l = List.of(COMPARABLE_A, COMPARABLE_B, COMPARABLE_C);
-        assertThatThrownBy(() -> Checks.notNullAnd(COMPARABLE_D).isAnyOf(l))
+        final List<Integer> l = List.of(NUMBER_1, NUMBER_2, NUMBER_3);
+        assertThatThrownBy(() -> Checks.notNullAnd(NUMBER_4).isAnyOf(l))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid value: d, accepted values: [a, b, c]");
+                .hasMessage("Invalid value: 4, accepted values: [1, 2, 3]");
 
-        assertThatThrownBy(() -> Checks.notNullAnd(COMPARABLE_D).isAnyOf(l, "some message %s", "bob"))
+        assertThatThrownBy(() -> Checks.notNullAnd(NUMBER_4).isAnyOf(l, "some message %s", "bob"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("some message bob");
 
-        assertThatThrownBy(() -> Checks.notNullAnd(COMPARABLE_D).isAnyOfAnd(l))
+        assertThatThrownBy(() -> Checks.notNullAnd(NUMBER_4).isAnyOfAnd(l))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid value: d, accepted values: [a, b, c]");
+                .hasMessage("Invalid value: 4, accepted values: [1, 2, 3]");
 
-        assertThatThrownBy(() -> Checks.notNullAnd(COMPARABLE_D).isAnyOfAnd(l, "some message %s", "bob"))
+        assertThatThrownBy(() -> Checks.notNullAnd(NUMBER_4).isAnyOfAnd(l, "some message %s", "bob"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("some message bob");
     }
@@ -347,17 +327,17 @@ final class ChecksTest {
     }
 
     @Test
-    void comparableIsAnyOfShouldNotThrowExceptionWhenThereIsMatch() {
+    void collectionIsAnyOfShouldNotThrowExceptionWhenThereIsMatch() {
 
-        final List<String> l = List.of(COMPARABLE_A, COMPARABLE_B, COMPARABLE_C);
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_A).isAnyOf(l));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_A).isAnyOf(l, "some message %s", "bob"));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_A)).isAnyOfAnd(l);
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_A).isAnyOfAnd(l, "some message %s", "bob"));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_NULL).isAnyOf(l));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_NULL).isAnyOf(l, "some message %s", "bob"));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_NULL).isAnyOfAnd(l));
-        assertDoesNotThrow(() -> Checks.nullableAnd(COMPARABLE_NULL).isAnyOfAnd(l, "some message %s", "bob"));
+        final List<Integer> l = List.of(NUMBER_1, NUMBER_2, NUMBER_3);
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_1).isAnyOf(l));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_1).isAnyOf(l, "some message %s", "bob"));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_1)).isAnyOfAnd(l);
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_1).isAnyOfAnd(l, "some message %s", "bob"));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_NULL).isAnyOf(l));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_NULL).isAnyOf(l, "some message %s", "bob"));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_NULL).isAnyOfAnd(l));
+        assertDoesNotThrow(() -> Checks.nullableAnd(NUMBER_NULL).isAnyOfAnd(l, "some message %s", "bob"));
     }
 
     @Test
