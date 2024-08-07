@@ -1,5 +1,6 @@
 package ca.mpringle.util;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 public final class Timer {
 
     private final long startTimeInMillis;
+    @NotNull
     private final List<Long> elapsedTimesInMillis;
 
     private Timer(final long startTimeInMillis) {
@@ -15,6 +17,7 @@ public final class Timer {
         this.elapsedTimesInMillis = new ArrayList<>();
     }
 
+    @NotNull
     public static Timer createStarted() {
 
         return new Timer(Instant.now().toEpochMilli());
@@ -32,12 +35,14 @@ public final class Timer {
         return elapsedTimesInMillis.get(i);
     }
 
+    @NotNull
     public List<Long> getElapsedTimesInMillis() {
 
         return new ArrayList<>(elapsedTimesInMillis);
     }
 
     @Override
+    @NotNull
     public String toString() {
 
         final StringBuilder builder = new StringBuilder("start: +0\n");

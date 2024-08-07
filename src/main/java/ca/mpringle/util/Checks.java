@@ -1,5 +1,8 @@
 package ca.mpringle.util;
 
+import jakarta.annotation.Nullable;
+
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -12,7 +15,8 @@ public final class Checks {
     private Checks() {
     }
 
-    public static <T> T notNull(final T reference) {
+    @NotNull
+    public static <T> T notNull(@NotNull final T reference) {
 
         if (reference != null) {
             return reference;
@@ -21,42 +25,49 @@ public final class Checks {
         throw new NullPointerException("reference must not be null.");
     }
 
-    public static <T extends Number> NumberChecks<T> notNullAnd(final T reference) {
+    @NotNull
+    public static <T extends Number> NumberChecks<T> notNullAnd(@NotNull final T reference) {
 
         final StandardChecks<T> standardChecks = new StandardChecks<>(notNull(reference));
         return new NumberChecks<>(standardChecks);
     }
 
-    public static <T extends Number> NumberChecks<T> nullableAnd(final T reference) {
+    @NotNull
+    public static <T extends Number> NumberChecks<T> nullableAnd(@Nullable final T reference) {
 
         final StandardChecks<T> standardChecks = new StandardChecks<>(reference);
         return new NumberChecks<>(standardChecks);
     }
 
-    public static <T> CollectionChecks<T> notNullAnd(final Collection<T> reference) {
+    @NotNull
+    public static <T> CollectionChecks<T> notNullAnd(@NotNull final Collection<T> reference) {
 
         final StandardChecks<Collection<T>> standardChecks = new StandardChecks<>(notNull(reference));
         return new CollectionChecks<>(standardChecks);
     }
 
-    public static <T> CollectionChecks<T> nullableAnd(final Collection<T> reference) {
+    @NotNull
+    public static <T> CollectionChecks<T> nullableAnd(@Nullable final Collection<T> reference) {
 
         final StandardChecks<Collection<T>> standardChecks = new StandardChecks<>(reference);
         return new CollectionChecks<>(standardChecks);
     }
 
-    public static <T> OptionalChecks<T> notNullAnd(final Optional<T> reference) {
+    @NotNull
+    public static <T> OptionalChecks<T> notNullAnd(@NotNull final Optional<T> reference) {
 
         final StandardChecks<Optional<T>> standardChecks = new StandardChecks<>(notNull(reference));
         return new OptionalChecks<>(standardChecks);
     }
 
-    public static <T> Checks.StandardChecks<T> notNullAnd(final T reference) {
+    @NotNull
+    public static <T> Checks.StandardChecks<T> notNullAnd(@NotNull final T reference) {
 
         return new StandardChecks<>(notNull(reference));
     }
 
-    public static <T> Checks.StandardChecks<T> nullableAnd(final T reference) {
+    @NotNull
+    public static <T> Checks.StandardChecks<T> nullableAnd(@Nullable final T reference) {
 
         return new StandardChecks<>(reference);
     }
@@ -512,43 +523,50 @@ public final class Checks {
 
     public static class StandardChecks<T> {
 
+        @Nullable
         final T reference;
 
-        private StandardChecks(final T reference) {
+        private StandardChecks(@Nullable final T reference) {
 
             this.reference = reference;
         }
 
+        @Nullable
         public T get() {
 
             return reference;
         }
 
-        public <R> R map(final Function<T, R> mapperFunction) {
+        @Nullable
+        public <R> R map(@NotNull final Function<T, R> mapperFunction) {
 
             return reference == null ? null : mapperFunction.apply(reference);
         }
 
-        public T isValid(final Predicate<T> predicate) {
+        @Nullable
+        public T isValid(@NotNull final Predicate<T> predicate) {
 
             return isValidAnd(predicate).get();
         }
 
-        public T isValid(final Predicate<T> predicate,
-                         final String errorMessageTemplate,
-                         final Object... errorMessageArgs) {
+        @Nullable
+        public T isValid(@NotNull final Predicate<T> predicate,
+                         @NotNull final String errorMessageTemplate,
+                         @NotNull final Object... errorMessageArgs) {
 
             return isValidAnd(predicate, errorMessageTemplate, errorMessageArgs).get();
         }
 
-        public Checks.StandardChecks<T> isValidAnd(final Predicate<T> predicate) {
+        @NotNull
+        public Checks.StandardChecks<T> isValidAnd(@NotNull final Predicate<T> predicate) {
 
             return isValidAnd(predicate, "Predicate check failed for '%s'", reference);
         }
 
-        public Checks.StandardChecks<T> isValidAnd(final Predicate<T> predicate,
-                                                   final String errorMessageTemplate,
-                                                   final Object... errorMessageArgs) {
+        @NotNull
+        public Checks.StandardChecks<T> isValidAnd(@NotNull final Predicate<T> predicate,
+                                                   @NotNull final String errorMessageTemplate,
+                                                   @NotNull final Object... errorMessageArgs) {
 
             if (reference == null || predicate.test(reference)) {
                 return this;
@@ -557,26 +575,30 @@ public final class Checks {
             throw new IllegalArgumentException(String.format(errorMessageTemplate, errorMessageArgs));
         }
 
-        public T isAnyOf(final List<T> validValues) {
+        @NotNull
+        public T isAnyOf(@NotNull final List<T> validValues) {
 
             return isAnyOfAnd(validValues).get();
         }
 
-        public T isAnyOf(final List<T> validValues,
-                         final String errorMessageTemplate,
-                         final Object... errorMessageArgs) {
+        @NotNull
+        public T isAnyOf(@NotNull final List<T> validValues,
+                         @NotNull final String errorMessageTemplate,
+                         @NotNull final Object... errorMessageArgs) {
 
             return isAnyOfAnd(validValues, errorMessageTemplate, errorMessageArgs).get();
         }
 
-        public Checks.StandardChecks<T> isAnyOfAnd(final List<T> validValues) {
+        @NotNull
+        public Checks.StandardChecks<T> isAnyOfAnd(@NotNull final List<T> validValues) {
 
             return isAnyOfAnd(validValues, "Invalid value: %s, accepted values: %s", get(), Arrays.toString(validValues.toArray()));
         }
 
-        public Checks.StandardChecks<T> isAnyOfAnd(final List<T> validValues,
-                                                   final String errorMessageTemplate,
-                                                   final Object... errorMessageArgs) {
+        @NotNull
+        public Checks.StandardChecks<T> isAnyOfAnd(@NotNull final List<T> validValues,
+                                                   @NotNull final String errorMessageTemplate,
+                                                   @NotNull final Object... errorMessageArgs) {
 
             if (get() == null || validValues.contains(get())) {
                 return this;

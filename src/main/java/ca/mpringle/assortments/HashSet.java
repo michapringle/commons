@@ -1,13 +1,20 @@
 package ca.mpringle.assortments;
 
+import jakarta.annotation.Nullable;
+
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 
-public class HashSet<E extends Equals<?>> extends Assortment<E> {
+public class HashSet<E extends Equals<?>> extends AbstractAssortment<E> {
 
     // this value must be > 0
     private static final int INITIAL_CAPACITY = 3;
+
+    @NotNull
     private List<List<E>> list;
     private int size;
 
@@ -20,7 +27,7 @@ public class HashSet<E extends Equals<?>> extends Assortment<E> {
         size = 0;
     }
 
-    public void add(final E element) {
+    public void add(@Nullable final E element) {
 
         if (contains(element)) {
             return;
@@ -32,7 +39,7 @@ public class HashSet<E extends Equals<?>> extends Assortment<E> {
         resizeIfRequired();
     }
 
-    public void add(final HashSet<E> hashSet) {
+    public void addAll(@NotNull final HashSet<E> hashSet) {
 
         for (final List<E> sublist : hashSet.list) {
             for (final E element : sublist) {
@@ -42,15 +49,19 @@ public class HashSet<E extends Equals<?>> extends Assortment<E> {
     }
 
     @Override
-    public boolean contains(final E element) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public boolean contains(@Nullable final E element) {
+
+        if (element == null) {
+            return false;
+        }
 
         final int index = element.hashCode() % list.size();
-        // could be a problem if the Equals<T> interface is implemented and
-        // the developer does not write a custom equals or hashcode
-        return list.get(index).stream().anyMatch(e -> e.equals(element));
+        return list.get(index).stream().anyMatch(e -> ((Equals) e).isEqual(element));
     }
 
-    public void addAll(final E... elements) {
+    @SafeVarargs
+    public final void addAll(@NotNull final E... elements) {
 
         for (final E element : elements) {
             add(element);
@@ -64,6 +75,7 @@ public class HashSet<E extends Equals<?>> extends Assortment<E> {
     }
 
     @Override
+    @NotNull
     public Iterator<E> iterator() {
 
         return new Iterator<>() {
@@ -76,6 +88,7 @@ public class HashSet<E extends Equals<?>> extends Assortment<E> {
             }
 
             @Override
+            @Nullable
             public E next() {
                 int sum = 0;
                 for (final List<E> sublist : list) {
@@ -87,12 +100,13 @@ public class HashSet<E extends Equals<?>> extends Assortment<E> {
                     }
                 }
 
-                return null;
+                throw new NoSuchElementException("The iterator is exhausted, no more elements.");
             }
         };
     }
 
     @Override
+    @NotNull
     public String toString() {
 
         final StringBuilder indexes = new StringBuilder();
@@ -100,19 +114,18 @@ public class HashSet<E extends Equals<?>> extends Assortment<E> {
         final StringBuilder elements = new StringBuilder();
 
         for (int i = 0; i < list.size(); i++) {
-            indexes.append(" ").append(i);
-            arrows.append(" ↓");
-            elements.append("(");
+            indexes.append(i).append(" ");
+            arrows.append("↓ ");
+            elements.append("{");
             int indexLengthSoFar = indexes.length();
             int arrowsLengthSoFar = arrows.length();
             for (final E element : list.get(i)) {
                 elements.append(element == null ? " " : element.toString()).append(",");
             }
-            if (list.get(i).isEmpty()) {
-                elements.append(" ,");
+            if (!list.get(i).isEmpty()) {
+                elements.deleteCharAt(elements.length() - 1);
             }
-            elements.deleteCharAt(elements.length() - 1);
-            elements.append(") ");
+            elements.append("} ");
             indexes.append(" ".repeat(Math.max(0, elements.length() - indexLengthSoFar)));
             arrows.append(" ".repeat(Math.max(0, elements.length() - arrowsLengthSoFar)));
         }
@@ -136,14 +149,17 @@ public class HashSet<E extends Equals<?>> extends Assortment<E> {
             return;
         }
 
-        // a somewhat lax function to restrict the size of the hashset.
-        if (size > list.size() * 3) {
+        // allow easy substitution of sizing algorithms
+        final Supplier<Boolean> sizingAlgorithm = () -> size > list.size() * 3;
+
+        if (sizingAlgorithm.get()) {
             final HashSet<E> hashSet = new HashSet<>(list.size() * 2);
-            hashSet.add(this);
+            hashSet.addAll(this);
             list = hashSet.list;
         }
     }
 
+    @NotNull
     private List<List<E>> createEmptyListOfSize(final int size) {
 
         final List<List<E>> newList = new ArrayList<>(size);

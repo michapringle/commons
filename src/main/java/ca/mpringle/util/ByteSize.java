@@ -1,5 +1,6 @@
 package ca.mpringle.util;
 
+import javax.validation.constraints.NotNull;
 import java.text.DecimalFormat;
 
 /**
@@ -33,58 +34,72 @@ public final class ByteSize {
         this.sizeInBits = (long) sizeInBits;
     }
 
+    @NotNull
     public static ByteSize fromBits(final long size) {
         return new ByteSize(size);
     }
 
+    @NotNull
     public static ByteSize fromNibbles(final double size) {
         return new ByteSize(size * NIBBLE_BITS);
     }
 
+    @NotNull
     public static ByteSize fromBytes(final double size) {
         return new ByteSize(size * BYTE_BITS);
     }
 
+    @NotNull
     public static ByteSize fromKb(final double size) {
         return new ByteSize(size * KB_BITS);
     }
 
+    @NotNull
     public static ByteSize fromKib(final double size) {
         return new ByteSize(size * KIB_BITS);
     }
 
+    @NotNull
     public static ByteSize fromMb(final double size) {
         return new ByteSize(size * MB_BITS);
     }
 
+    @NotNull
     public static ByteSize fromMib(final double size) {
         return new ByteSize(size * MIB_BITS);
     }
 
+    @NotNull
     public static ByteSize fromGb(final double size) {
         return new ByteSize(size * GB_BITS);
     }
 
+    @NotNull
     public static ByteSize fromGib(final double size) {
         return new ByteSize(size * GIB_BITS);
     }
 
+    @NotNull
     public static ByteSize fromTb(final double size) {
         return new ByteSize(size * TB_BITS);
     }
 
+    @NotNull
     public static ByteSize fromTib(final double size) {
         return new ByteSize(size * TIB_BITS);
     }
 
+    @NotNull
     public static ByteSize fromPb(final double size) {
         return new ByteSize(size * PB_BITS);
     }
 
+    @NotNull
     public static ByteSize fromPib(final double size) {
         return new ByteSize(size * PIB_BITS);
     }
 
+    @NotNull
     public static ByteSize fromEb(final double size) {
         return new ByteSize(size * EB_BITS);
     }
@@ -93,7 +108,8 @@ public final class ByteSize {
         return sizeInBits;
     }
 
-    public String toBits(final String formatString) {
+    @NotNull
+    public String toBits(@NotNull final String formatString) {
         return new DecimalFormat(formatString).format(sizeInBits);
     }
 
@@ -101,7 +117,8 @@ public final class ByteSize {
         return convert(sizeInBits, NIBBLE_BITS);
     }
 
-    public String toNibbles(final String formatString) {
+    @NotNull
+    public String toNibbles(@NotNull final String formatString) {
         final double number = convert(sizeInBits, NIBBLE_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -110,7 +127,8 @@ public final class ByteSize {
         return convert(sizeInBits, BYTE_BITS);
     }
 
-    public String toBytes(final String formatString) {
+    @NotNull
+    public String toBytes(@NotNull final String formatString) {
         final double number = convert(sizeInBits, BYTE_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -119,7 +137,8 @@ public final class ByteSize {
         return convert(sizeInBits, KB_BITS);
     }
 
-    public String toKB(final String formatString) {
+    @NotNull
+    public String toKB(@NotNull final String formatString) {
         final double number = convert(sizeInBits, KB_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -128,7 +147,8 @@ public final class ByteSize {
         return convert(sizeInBits, KIB_BITS);
     }
 
-    public String toKiB(final String formatString) {
+    @NotNull
+    public String toKiB(@NotNull final String formatString) {
         final double number = convert(sizeInBits, KIB_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -137,7 +157,8 @@ public final class ByteSize {
         return convert(sizeInBits, MB_BITS);
     }
 
-    public String toMB(final String formatString) {
+    @NotNull
+    public String toMB(@NotNull final String formatString) {
         final double number = convert(sizeInBits, MB_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -146,7 +167,8 @@ public final class ByteSize {
         return convert(sizeInBits, MIB_BITS);
     }
 
-    public String toMiB(final String formatString) {
+    @NotNull
+    public String toMiB(@NotNull final String formatString) {
         final double number = convert(sizeInBits, MIB_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -155,7 +177,8 @@ public final class ByteSize {
         return convert(sizeInBits, GB_BITS);
     }
 
-    public String toGB(final String formatString) {
+    @NotNull
+    public String toGB(@NotNull final String formatString) {
         final double number = convert(sizeInBits, GB_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -164,7 +187,8 @@ public final class ByteSize {
         return convert(sizeInBits, GIB_BITS);
     }
 
-    public String toGiB(final String formatString) {
+    @NotNull
+    public String toGiB(@NotNull final String formatString) {
         final double number = convert(sizeInBits, GIB_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -173,7 +197,8 @@ public final class ByteSize {
         return convert(sizeInBits, TB_BITS);
     }
 
-    public String toTB(final String formatString) {
+    @NotNull
+    public String toTB(@NotNull final String formatString) {
         final double number = convert(sizeInBits, TB_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -182,7 +207,8 @@ public final class ByteSize {
         return convert(sizeInBits, TIB_BITS);
     }
 
-    public String toTiB(final String formatString) {
+    @NotNull
+    public String toTiB(@NotNull final String formatString) {
         final double number = convert(sizeInBits, TIB_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -191,7 +217,8 @@ public final class ByteSize {
         return convert(sizeInBits, PB_BITS);
     }
 
-    public String toPB(final String formatString) {
+    @NotNull
+    public String toPB(@NotNull final String formatString) {
         final double number = convert(sizeInBits, PB_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -200,7 +227,8 @@ public final class ByteSize {
         return convert(sizeInBits, PIB_BITS);
     }
 
-    public String toPiB(final String formatString) {
+    @NotNull
+    public String toPiB(@NotNull final String formatString) {
         final double number = convert(sizeInBits, PIB_BITS);
         return new DecimalFormat(formatString).format(number);
     }
@@ -209,7 +237,8 @@ public final class ByteSize {
         return convert(sizeInBits, EB_BITS);
     }
 
-    public String toEB(final String formatString) {
+    @NotNull
+    public String toEB(@NotNull final String formatString) {
         final double number = convert(sizeInBits, EB_BITS);
         return new DecimalFormat(formatString).format(number);
     }
