@@ -1,13 +1,19 @@
 package ca.mpringle.util;
 
+import jakarta.annotation.Nullable;
+
+import javax.validation.constraints.NotNull;
+
 public final class Either<L, R> {
 
+    @Nullable
     private final L left;
+    @Nullable
     private final R right;
     private final boolean isLeft;
 
-    private Either(final L left,
-                   final R right,
+    private Either(@Nullable final L left,
+                   @Nullable final R right,
                    final boolean isLeft) {
 
         this.left = left;
@@ -20,18 +26,22 @@ public final class Either<L, R> {
         Checks.notNullAnd(isLeft).isValid(p -> isLeftSet || isRightSet, message);
     }
 
-    public static <L, R> Either<L, R> newLeft(final L left) {
+    @NotNull
+    public static <L, R> Either<L, R> newLeft(@NotNull final L left) {
         return new Either<>(left, null, true);
     }
 
-    public static <L, R> Either<L, R> newRight(final R right) {
+    @NotNull
+    public static <L, R> Either<L, R> newRight(@NotNull final R right) {
         return new Either<>(null, right, false);
     }
 
+    @Nullable
     public L getLeft() {
         return left;
     }
 
+    @Nullable
     public R getRight() {
         return right;
     }
@@ -45,6 +55,7 @@ public final class Either<L, R> {
     }
 
     @Override
+    @NotNull
     public String toString() {
 
         return isLeft ? "[" + left.toString() + ", -]" : "[-, " + right.toString() + "]";

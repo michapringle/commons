@@ -3,7 +3,9 @@ package ca.mpringle.assortments;
 import ca.mpringle.util.Pair;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static ca.mpringle.assortments.EqualsAdapter.typeAsEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +47,7 @@ final class LinkedListTest {
     }
 
     @Test
-    void appendShouldAddListWithoutCopying() {
+    void addAllShouldAddListWithoutCopying() {
 
         final LinkedList<Equals<A>> subjectUnderTest = new LinkedList<>();
         final A one = new A();
@@ -59,7 +61,7 @@ final class LinkedListTest {
         toAppend.add(typeAsEquals(three));
         toAppend.add(typeAsEquals(four));
 
-        subjectUnderTest.append(toAppend);
+        subjectUnderTest.addAll(toAppend);
 
         final Iterator<Equals<A>> actual = subjectUnderTest.iterator();
         assertEquals(typeAsEquals(one), actual.next());
@@ -98,11 +100,106 @@ final class LinkedListTest {
     }
 
     @Test
+    void toCollectionTypeShouldWork() {
+
+        final LinkedList<Equals<Integer>> subjectUnderTest = new LinkedList<>();
+
+        assertEquals(0, subjectUnderTest.toArray(EqualsAdapter[]::new).length);
+
+        for (int i = 0; i < 10; i++) {
+            subjectUnderTest.add(EqualsAdapter.typeAsEquals(i));
+        }
+
+        final List<Equals<Integer>> actual = subjectUnderTest.toCollectionType(ArrayList::new);
+        assertEquals(10, actual.size());
+        actual.forEach(a -> assertTrue(subjectUnderTest.contains(a)));
+    }
+
+    @Test
+    void toArrayShouldWork() {
+
+        final LinkedList<Equals<Integer>> subjectUnderTest = new LinkedList<>();
+
+        assertEquals(0, subjectUnderTest.toArray(EqualsAdapter[]::new).length);
+
+        for (int i = 0; i < 10; i++) {
+            subjectUnderTest.add(EqualsAdapter.typeAsEquals(i));
+        }
+
+        final Equals<Integer>[] actual = subjectUnderTest.toArray(Pair[]::new);
+        assertEquals(10, actual.length);
+        for (final Equals<Integer> equal : actual) {
+            assertTrue(subjectUnderTest.contains(equal));
+        }
+    }
+
+    @Test
+    void equalsShouldWorkForNormalCase() {
+
+        final LinkedList<Equals<String>> subjectUnderTest = new LinkedList<>();
+        subjectUnderTest.add(typeAsEquals("a"));
+        subjectUnderTest.add(typeAsEquals("b"));
+        subjectUnderTest.add(typeAsEquals("c"));
+        subjectUnderTest.add(typeAsEquals("d"));
+
+        final LinkedList<Equals<String>> other = new LinkedList<>();
+        other.add(typeAsEquals("a"));
+        other.add(typeAsEquals("b"));
+        other.add(typeAsEquals("c"));
+        other.add(typeAsEquals("d"));
+
+        assertEquals(other, subjectUnderTest);
+    }
+
+    @Test
+    void equalsShouldReturnFalseWhenNull() {
+
+        final LinkedList<Equals<String>> subjectUnderTest = new LinkedList<>();
+
+        assertNotEquals(subjectUnderTest, null);
+    }
+
+    @Test
     void toStringShouldHandleEmptyList() {
 
         final LinkedList<Equals<String>> subjectUnderTest = new LinkedList<>();
 
         assertNotNull(subjectUnderTest.toString());
+    }
+
+    @Test
+    void containsAnyShouldWork() {
+
+        final LinkedList<Equals<String>> subjectUnderTest = new LinkedList<>();
+        subjectUnderTest.add(typeAsEquals("a"));
+        subjectUnderTest.add(typeAsEquals("b"));
+        subjectUnderTest.add(typeAsEquals("c"));
+        subjectUnderTest.add(typeAsEquals("d"));
+
+        final LinkedList<Equals<String>> emptyList = new LinkedList<>();
+        final LinkedList<Equals<String>> noMatch = new LinkedList<>();
+        noMatch.add(typeAsEquals("e"));
+        noMatch.add(typeAsEquals("f"));
+        noMatch.add(typeAsEquals("g"));
+        noMatch.add(typeAsEquals("h"));
+
+        final LinkedList<Equals<String>> singleMatch = new LinkedList<>();
+        singleMatch.add(typeAsEquals("e"));
+        singleMatch.add(typeAsEquals("f"));
+        singleMatch.add(typeAsEquals("g"));
+        singleMatch.add(typeAsEquals("d"));
+
+        final LinkedList<Equals<String>> superSet = new LinkedList<>();
+        superSet.add(typeAsEquals("a"));
+        superSet.add(typeAsEquals("b"));
+        superSet.add(typeAsEquals("c"));
+        superSet.add(typeAsEquals("d"));
+        superSet.add(typeAsEquals("e"));
+
+        assertFalse(subjectUnderTest.containsAny(emptyList));
+        assertFalse(subjectUnderTest.containsAny(noMatch));
+        assertTrue(subjectUnderTest.containsAny(singleMatch));
+        assertTrue(subjectUnderTest.containsAny(superSet));
     }
 
     @Test

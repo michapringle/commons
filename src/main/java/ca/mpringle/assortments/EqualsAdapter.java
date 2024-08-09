@@ -19,7 +19,7 @@ import java.util.Objects;
  * does. See the examples below.
  * <pre>
  *
- *  // A class without a custom equals or hashcode implementation
+ *  // Your new class without a custom equals or hashcode implementation
  *  // Do not use the EqualsAdapter
  *  public final MyContrivedExample {
  *      final Something something;
@@ -29,7 +29,7 @@ import java.util.Objects;
  *      }
  *  }
  *
- *  // A class with a custom equals and hashcode implementation
+ *  // Your new class with a custom equals and hashcode implementation
  *  // Do not use the EqualsAdapter, implement Equals
  *  public final MyClass implements Equals&#60;MyClass&#62; {
  *       ...
@@ -51,17 +51,23 @@ import java.util.Objects;
  */
 public final class EqualsAdapter<T> extends AbstractEquals<EqualsAdapter<T>> {
 
+    @Nullable
     private final T instance;
 
-    private EqualsAdapter(final T instance) {
+    private EqualsAdapter(@Nullable final T instance) {
 
         this.instance = instance;
     }
 
-    public static <E> Equals<E> typeAsEquals(final E instance) {
+    public static <S extends Equals<?>, E> S typeAsEquals(@Nullable final E instance) {
 
-        final Equals<EqualsAdapter<E>> e = new EqualsAdapter<>(instance);
-        return (Equals<E>) e;
+        @SuppressWarnings("unchecked") final S s = (S) new EqualsAdapter<>(instance);
+        return s;
+    }
+
+    @Nullable
+    T getValue() {
+        return instance;
     }
 
     @Override
@@ -79,8 +85,9 @@ public final class EqualsAdapter<T> extends AbstractEquals<EqualsAdapter<T>> {
         return Objects.hash(instance);
     }
 
+    @Nullable
     @Override
     public String toString() {
-        return instance.toString();
+        return instance == null ? null : instance.toString();
     }
 }

@@ -4,15 +4,18 @@ import jakarta.annotation.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Example linked list that uses Equals and supports the EqualsAdapter.
  * It is recommended not to write your own, but instead create a
  * decorator that follows the pattern here, for example a Set decorator.
  */
-public final class LinkedList<E extends Equals<?>> extends Assortment<E> {
+public final class LinkedList<E extends Equals<?>> extends AbstractAssortment<E> {
 
+    @Nullable
     private Node<E> first;
+    @Nullable
     private Node<E> head;
     private int size;
 
@@ -22,7 +25,7 @@ public final class LinkedList<E extends Equals<?>> extends Assortment<E> {
         size = 0;
     }
 
-    public void add(final E element) {
+    public void add(@Nullable final E element) {
 
         if (head == null) {
             head = new Node<>(element, null);
@@ -36,7 +39,7 @@ public final class LinkedList<E extends Equals<?>> extends Assortment<E> {
         size++;
     }
 
-    public void append(@NotNull final LinkedList<E> list) {
+    public void addAll(@NotNull final LinkedList<E> list) {
 
         head.next = list.first;
         head = list.head;
@@ -55,10 +58,12 @@ public final class LinkedList<E extends Equals<?>> extends Assortment<E> {
     }
 
     @Override
+    @NotNull
     public Iterator<E> iterator() {
 
         return new Iterator<>() {
 
+            @NotNull
             Node<E> node = first;
 
             @Override
@@ -67,7 +72,13 @@ public final class LinkedList<E extends Equals<?>> extends Assortment<E> {
             }
 
             @Override
+            @Nullable
             public E next() {
+
+                if (node == null) {
+                    throw new NoSuchElementException("The iterator is exhausted, no more elements.");
+                }
+
                 final E element = node.element;
                 node = node.next;
                 return element;
@@ -76,6 +87,7 @@ public final class LinkedList<E extends Equals<?>> extends Assortment<E> {
     }
 
     @Override
+    @NotNull
     public String toString() {
 
         final String string = head == null
@@ -90,6 +102,7 @@ public final class LinkedList<E extends Equals<?>> extends Assortment<E> {
     }
 
 
+    @Nullable
     public E get() {
 
         return head == null ? null : head.element;
@@ -100,21 +113,16 @@ public final class LinkedList<E extends Equals<?>> extends Assortment<E> {
         return size;
     }
 
-    @Override
-    public boolean contains(@Nullable final E element) {
-
-        // could be a problem if the Equals interface is implemented and
-        // the developer does not write a custom equals or hashcode
-        return stream().anyMatch(e -> e.equals(element));
-    }
-
     private static class Node<E2 extends Equals<?>> {
 
+        @Nullable
         private final E2 element;
+        @Nullable
         private Node<E2> next;
+        @Nullable
         private final Node<E2> previous;
 
-        public Node(final E2 element, final Node<E2> previous) {
+        public Node(@Nullable final E2 element, @Nullable final Node<E2> previous) {
             this.element = element;
             this.next = null;
             this.previous = previous;

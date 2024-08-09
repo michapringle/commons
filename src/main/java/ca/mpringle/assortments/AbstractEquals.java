@@ -4,7 +4,7 @@ import jakarta.annotation.Nullable;
 
 /**
  * An abstract implementation of (@link Equals<T>} to avoid the nuisance of
- * having to implement 4 methods when only 2 should be required. Prefer using
+ * having to implement 4 methods when only 2 should be required. Prefer
  * this class to the interface where possible.
  */
 public abstract class AbstractEquals<T> implements Equals<T> {
@@ -22,21 +22,24 @@ public abstract class AbstractEquals<T> implements Equals<T> {
     public abstract int computeHash();
 
     /**
-     * no implementation required
+     * Delegates to {@link AbstractEquals#computeHash()}. Custom implementations
+     * are not allowed.
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return computeHash();
     }
 
     /**
-     * no implementation required
+     * Delegates to {@link AbstractEquals#isEqual(T)}. Custom implementations
+     * are not allowed.
      */
     @Override
-    public boolean equals(@Nullable final Object instance) {
+    public final boolean equals(@Nullable final Object instance) {
 
         try {
-            return isEqual((T) instance);
+            @SuppressWarnings("unchecked") final boolean result = isEqual((T) instance);
+            return result;
         } catch (ClassCastException handled) {
             return false;
         }

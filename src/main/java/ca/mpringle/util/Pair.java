@@ -9,15 +9,25 @@ import java.util.Objects;
 public final class Pair<E1, E2> extends AbstractEquals<Pair<E1, E2>> {
 
     @Nullable
-    public final E1 a;
+    private final E1 a;
     @Nullable
-    public final E2 b;
+    private final E2 b;
 
     public Pair(@Nullable final E1 a,
                 @Nullable final E2 b) {
 
         this.a = a;
         this.b = b;
+    }
+
+    @Nullable
+    public E1 getFirst() {
+        return a;
+    }
+
+    @Nullable
+    public E2 getSecond() {
+        return b;
     }
 
     @Override
@@ -36,8 +46,8 @@ public final class Pair<E1, E2> extends AbstractEquals<Pair<E1, E2>> {
         return Objects.hash(a, b);
     }
 
-    @NotNull
     @Override
+    @NotNull
     public String toString() {
 
         return String.format("(%s, %s)", a, b);
