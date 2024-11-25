@@ -32,8 +32,9 @@ public final class LinkedList<E extends Equals<?>> extends AbstractAssortment<E>
             first = head;
         } else {
             final Node<E> n = new Node<>(element, head);
+            // current last node point to the new last node
             head.next = n;
-            // make head the latest node
+            // make head the last node
             head = n;
         }
         size++;

@@ -13,9 +13,8 @@ More work is needed here
 
 - wrapper classes for the existing Collections base types,
   i.e. new assortment.List(new ArrayList());
-- An Equality interface to go with Equals, much like Comparator is to Comparable,
-- Comparable that implements Equals
 - Javadoc is missing on key abstract classes
+- Mutable interfaces for all base type assortments, i.e. MutableList, MutableSet, MutableMap, etc
 
 ### util package
 
