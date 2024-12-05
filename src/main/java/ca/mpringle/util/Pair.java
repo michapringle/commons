@@ -6,32 +6,32 @@ import jakarta.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
-public final class Pair<E1, E2> extends AbstractEquals<Pair<E1, E2>> {
+public final class Pair<A, B> extends AbstractEquals<Pair<A, B>> {
 
     @Nullable
-    private final E1 a;
+    private final A a;
     @Nullable
-    private final E2 b;
+    private final B b;
 
-    public Pair(@Nullable final E1 a,
-                @Nullable final E2 b) {
+    public Pair(@Nullable final A a,
+                @Nullable final B b) {
 
         this.a = a;
         this.b = b;
     }
 
     @Nullable
-    public E1 getFirst() {
+    public A getFirst() {
         return a;
     }
 
     @Nullable
-    public E2 getSecond() {
+    public B getSecond() {
         return b;
     }
 
     @Override
-    public boolean isEqual(@Nullable final Pair<E1, E2> instance) {
+    public boolean isEqual(@Nullable final Pair<A, B> instance) {
 
         if (instance == null) {
             return false;

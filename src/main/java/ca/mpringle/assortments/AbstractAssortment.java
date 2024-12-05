@@ -56,16 +56,10 @@ public abstract class AbstractAssortment<E extends Equals<?>> extends AbstractEq
     @NotNull
     public E[] toArray(@NotNull final IntFunction<E[]> generator) {
 
-        final Class<?> componentType = generator.apply(0).getClass().getComponentType();
-        @SuppressWarnings("unchecked") final E[] elements = (E[]) Array.newInstance(componentType, 0);
-        return toArray(elements);
-    }
-
-    @NotNull
-    private E[] toArray(@NotNull final E[] elements) {
-
         if (isEmpty()) {
-            return elements;
+            final Class<?> componentType = generator.apply(0).getClass().getComponentType();
+            @SuppressWarnings("unchecked") final E[] array = (E[]) Array.newInstance(componentType, 0);
+            return array;
         }
 
         final Iterator<E> iterator = iterator();
